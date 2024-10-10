@@ -11,7 +11,10 @@ const textLoad = () => {
   }, 4600) //1s = 1000 milisecond
 
   setTimeout(() => {
-    text.textContent = "Graphic Designer";
+    text.textContent = "Software Developer";
+  }, 8500)
+   setTimeout(() => {
+    text.textContent = "Back-End Developer";
   }, 8500)
 }
 
