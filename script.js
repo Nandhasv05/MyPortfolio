@@ -3,19 +3,17 @@ const text = document.getElementById("text-change");
 
 const textLoad = () => {
   setTimeout(() => {
-    text.textContent = "Front-End Developer";
+    text.textContent = "Web Developer";
   }, 450)
 
   setTimeout(() => {
-    text.textContent = "Web Developer";
+    text.textContent = "App Developer";
   }, 4600) //1s = 1000 milisecond
 
   setTimeout(() => {
     text.textContent = "Software Developer";
   }, 8500)
-   setTimeout(() => {
-    text.textContent = "Back-End Developer";
-  }, 8500)
+
 }
 
 textLoad();
