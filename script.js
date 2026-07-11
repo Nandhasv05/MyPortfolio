@@ -1,136 +1,520 @@
+// --- Smooth Role Text Transition ---
+const roleElement = document.getElementById("role-text");
+const roles = ["Software Developer", "React Developer", "React Native Developer", "Full Stack Developer"];
+let roleIndex = 0;
 
-const text = document.getElementById("text-change");
-
-const textLoad = () => {
-  setTimeout(() => {
-    text.textContent = "Web Developer";
-  }, 450)
-
-  setTimeout(() => {
-    text.textContent = "App Developer";
-  }, 4600) //1s = 1000 milisecond
-
-  setTimeout(() => {
-    text.textContent = "Software Developer";
-  }, 8500)
-
+function rotateRole() {
+    roleIndex = (roleIndex + 1) % roles.length;
+    roleElement.classList.remove('role-text-anim');
+    void roleElement.offsetWidth;
+    roleElement.textContent = roles[roleIndex];
+    roleElement.classList.add('role-text-anim');
 }
 
-textLoad();
-setInterval(textLoad, 12000);
+if (roleElement) {
+    setInterval(rotateRole, 3500);
+}
 
-//humbarger menu open and close
-const menuOpen = document.getElementById('open-menu');
+// --- Cursor Interaction (Desktop Glow) ---
+const cursorGlow = document.getElementById('cursor-glow');
+if (cursorGlow && matchMedia('(pointer:fine)').matches) {
+    let mouseX = 0, mouseY = 0, isMouseMoving = false;
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX; mouseY = e.clientY;
+        if (!isMouseMoving) cursorGlow.style.opacity = '1';
+        isMouseMoving = true;
+    });
+    function updateCursor() {
+        if (isMouseMoving) cursorGlow.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(updateCursor);
+    }
+    requestAnimationFrame(updateCursor);
+    document.addEventListener('mouseleave', () => { cursorGlow.style.opacity = '0'; isMouseMoving = false; });
+    document.addEventListener('mouseenter', () => { cursorGlow.style.opacity = '1'; });
+}
+
+// --- Scroll Progress Bar ---
+const scrollProgress = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+    if (scrollProgress) {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        scrollProgress.style.width = `${progress}%`;
+    }
+});
+
+// --- Back to Top Button ---
+const backToTopBtn = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => {
+    if (backToTopBtn) {
+        if (window.scrollY > 500) backToTopBtn.classList.add('show');
+        else backToTopBtn.classList.remove('show');
+    }
+});
+if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// --- Mobile Navigation ---
+const hamburger = document.getElementById('hamburger');
 const navBar = document.getElementById('main-nav');
-const navLinks1 = document.getElementById('nav-link-1');
-const navLinks2 = document.getElementById('nav-link-2');
-const navLinks3 = document.getElementById('nav-link-3');
-const navLinks4 = document.getElementById('nav-link-4');
-const navLinks5 = document.getElementById('nav-link-5');
-const navLinks6 = document.getElementById('nav-link-6');
-
-menuOpen.addEventListener('click', () => {
-  menuOpen.classList.toggle('openmenu');
-  navBar.classList.toggle('active');
-});
-
-function removeClick() {
-  navBar.classList.remove('active');
-  menuOpen.classList.remove('openmenu');
+const navLinks = document.querySelectorAll('.nav-links');
+if (hamburger && navBar) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navBar.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+    });
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navBar.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        });
+    });
 }
 
-navLinks1.addEventListener('click', () => {
-  removeClick();
+// --- Sticky Header & Active Link Highlighting ---
+const header = document.getElementById('header');
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= (sectionTop - 200)) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+    });
 });
 
-navLinks2.addEventListener('click', () => {
-  removeClick();
-});
-
-navLinks3.addEventListener('click', () => {
-  removeClick();
-});
-
-navLinks4.addEventListener('click', () => {
-  removeClick();
-});
-
-navLinks5.addEventListener('click', () => {
-  removeClick();
-});
-
-navLinks6.addEventListener('click', () => {
-  removeClick();
-});
-
-// swiper js slide service cards
-const swiperCards = new Swiper(".sevices-inner", {
-  loop: true,
-  spaceBetween: 30,
-  grabCursor: true,
-  centerSlide: true,
-
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-    dynamicBullets: true,
-  },
-
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-
-  breakpoints: {
-    0: {
-      silderPerView: 1,
-    },
-    620: {
-      slidesPerView: 2,
-    },
-    968: {
-      slidesPerView: 3,
-    },
-  },
-});
-
-//theme mode - light and dark theme
+// --- Theme Toggle ---
 let lightMode = localStorage.getItem('lightMode');
 const themeIcon = document.getElementById('theme-icon');
-const header = document.getElementById('header');
-const imageChange = document.getElementById('change-image');
-const titles = document.getElementById('title');
-
 const enableLightTheme = () => {
-  document.body.classList.add('light-theme');
-  themeIcon.src = 'Assets/moon.png';
-  header.style.backgroundColor = 'rgba(255, 255, 255, 0.507)';
-  imageChange.src = 'Assets/1727733792057.jpg';
-  // titles.style.color = '#111827';
-  localStorage.setItem('lightMode', 'enable');
+    document.body.classList.add('light-theme');
+    if (themeIcon) themeIcon.src = 'Assets/moon.png';
+    localStorage.setItem('lightMode', 'enable');
 }
-
 const disableLightTheme = () => {
-  document.body.classList.remove('light-theme');
-  themeIcon.src = 'Assets/sun.png';
-  header.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-  imageChange.src = 'Assets/1727722792057.jpg';
-  // titles.style.color = '#f9fafb';
-  localStorage.setItem('lightMode', 'disable');
+    document.body.classList.remove('light-theme');
+    if (themeIcon) themeIcon.src = 'Assets/sun.png';
+    localStorage.setItem('lightMode', 'disable');
+}
+if (lightMode === 'enable') enableLightTheme();
+if (themeIcon) {
+    themeIcon.addEventListener('click', () => {
+        if (localStorage.getItem('lightMode') !== 'enable') enableLightTheme();
+        else disableLightTheme();
+    });
 }
 
-if (lightMode === 'enable') {
-  enableLightTheme();
+// --- Scroll Reveal Animations ---
+const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!isReducedMotion) {
+    const revealCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                if (entry.target.classList.contains('about-stats')) animateNumbers();
+                observer.unobserve(entry.target);
+            }
+        });
+    };
+    const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+    const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    document.querySelectorAll('.stagger-container').forEach(el => revealObserver.observe(el));
+} else {
+    document.querySelectorAll('.reveal, .stagger-container').forEach(el => el.classList.add('active'));
 }
 
-themeIcon.addEventListener('click', () => {
-  lightMode = localStorage.getItem('lightMode');
-  if (lightMode !== 'enable') {
-    enableLightTheme();
-  } else {
-    disableLightTheme();
-  }
+// --- Number Animation ---
+function animateNumbers() {
+    document.querySelectorAll('.count-up').forEach(counter => {
+        counter.innerText = '0';
+        const target = +counter.getAttribute('data-target');
+        const increment = target / 20;
+        const updateCounter = () => {
+            const c = +counter.innerText;
+            if (c < target) {
+                counter.innerText = `${Math.ceil(c + increment)}`;
+                setTimeout(updateCounter, 40);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCounter();
+    });
+}
 
-})
+// --- Contact Form Submission ---
+function sendEmail(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    if (btn.classList.contains('loading')) return;
+    btn.classList.add('loading');
+    setTimeout(() => {
+        btn.classList.remove('loading');
+        if (typeof swal !== 'undefined') swal("Message Sent!", "Thank you for reaching out. I'll get back to you soon.", "success");
+        else alert("Message Sent! Thank you for reaching out.");
+        e.target.reset();
+    }, 1500);
+}
 
+// --- PROJECT DATA STRUCTURE ---
+const projectsData = [
+    // PROFESSIONAL WORK
+    {
+        id: "squarenow",
+        name: "SquareNow",
+        type: "professional",
+        company: "Kapiital Kapslock",
+        description: "Contributed to the development and maintenance of the SquareNow digital platform, working on web and mobile application features, user workflows, API integrations, bug fixes, and ongoing enhancements.",
+        role: "Frontend Developer",
+        responsibilities: [
+            "Contributed to digital platform development",
+            "Worked on web and mobile application features",
+            "User workflows and API integrations",
+            "Bug fixes and ongoing enhancements"
+        ],
+        technologies: ["React", "React Native", "REST APIs"],
+        platforms: ["Web App", "Mobile App"],
+        image: "Assets/squareNow.png",
+        links: [
+            { label: "Web App", url: "https://auto.squarenow.in/", icon: "fa-solid fa-up-right-from-square" }
+            // Mobile app verified URL is not available, so button omitted
+        ],
+        ownershipNote: "Contributed to this product as part of my professional role at Kapiital Kapslock."
+    },
+    {
+        id: "getitnow",
+        name: "GetItNow",
+        type: "professional",
+        company: "Kapiital Kapslock",
+        description: "Contributed to the GetItNow web and mobile application ecosystem, working on application features, responsive interfaces, API integrations, maintenance, and production enhancements.",
+        role: "Frontend Developer",
+        responsibilities: [
+            "Web and mobile application ecosystem contribution",
+            "Application feature development",
+            "Responsive interface implementation",
+            "Maintenance and production enhancements"
+        ],
+        technologies: ["React", "React Native", "API Integration"],
+        platforms: ["Web App", "Mobile App"],
+        image: "Assets/GetInNow.png",
+        links: [
+            { label: "Web App", url: "https://gcb.getitnow.digital/", icon: "fa-solid fa-up-right-from-square" }
+            // Mobile app verified URL is not available
+        ],
+        ownershipNote: "Contributed to this product as part of my professional role at Kapiital Kapslock."
+    },
+    {
+        id: "paisanow",
+        name: "PaisaNow",
+        type: "professional",
+        company: "Kapiital Kapslock",
+        description: "Contributed to the PaisaNow multi-platform ecosystem consisting of an agent web portal and dedicated mobile applications for customers and field officers.",
+        role: "Frontend Developer",
+        responsibilities: [
+            "Agent web portal development",
+            "Dedicated mobile applications features",
+            "Cross-platform ecosystem support"
+        ],
+        technologies: ["React", "React Native", "API Integration"],
+        platforms: ["Web Portal", "Customer App", "Field Officer App"],
+        image: "Assets/Paisanow.png",
+        links: [
+            { label: "Agent Portal", url: "https://agent.paisanow.live/", icon: "fa-solid fa-up-right-from-square" }
+            // Customer/Field Officer app URLs not verified
+        ],
+        ownershipNote: "Contributed to this product as part of my professional role at Kapiital Kapslock."
+    },
+    {
+        id: "venalaigal",
+        name: "VenAlaigal",
+        type: "professional",
+        company: "Kapiital Kapslock",
+        description: "Contributed to the VenAlaigal multi-platform ecosystem, including the agent web portal and dedicated mobile applications for members/customers and field officers.",
+        role: "Frontend Developer",
+        responsibilities: [
+            "Agent web portal features",
+            "Mobile applications for members and field officers",
+            "Ecosystem maintenance and enhancements"
+        ],
+        technologies: ["React", "React Native", "API Integration"],
+        platforms: ["Agent Portal", "Member App", "Field Officer App"],
+        image: "Assets/venaligal.png",
+        links: [
+            { label: "Agent Portal", url: "https://agent.venaligal.com/", icon: "fa-solid fa-up-right-from-square" }
+        ],
+        ownershipNote: "Contributed to this product as part of my professional role at Kapiital Kapslock."
+    },
+    {
+        id: "thala",
+        name: "Thala",
+        type: "professional",
+        company: "Kapiital Kapslock",
+        description: "Contributed to the development and maintenance of the Thala web dashboard, working on application workflows, frontend functionality, API integration, and production enhancements.",
+        role: "Frontend Developer",
+        responsibilities: [
+            "Web dashboard development",
+            "Application workflows",
+            "Frontend functionality and API integration",
+            "Production enhancements"
+        ],
+        technologies: ["React", "API Integration"],
+        platforms: ["Web Dashboard"],
+        image: "Assets/thala.png",
+        links: [
+            { label: "View Web App", url: "https://thala.getitnow.digital/dashboard", icon: "fa-solid fa-up-right-from-square" }
+        ],
+        ownershipNote: "Contributed to this product as part of my professional role at Kapiital Kapslock."
+    },
 
+    // FREELANCE WORK
+    {
+        id: "saibuilders",
+        name: "Sai Builders",
+        type: "freelance",
+        company: "BuildNexDev",
+        description: "Designed and developed a responsive business website for Sai Builders, creating a professional digital presence for the construction business.",
+        role: "Independent Developer / BuildNexDev",
+        responsibilities: [
+            "Responsive business website design",
+            "Digital presence creation",
+            "Development and deployment"
+        ],
+        technologies: ["HTML", "CSS", "JavaScript", "Responsive Design"],
+        platforms: ["Website"],
+        image: null, // No exact screenshot provided, uses placeholder
+        links: [
+            { label: "View Live Website", url: "https://saibuilder.in/", icon: "fa-solid fa-globe" }
+        ],
+        ownershipNote: "Developed independently through BuildNexDev."
+    },
+    {
+        id: "srs",
+        name: "Smart Research Solution (SRS)",
+        type: "freelance",
+        company: "BuildNexDev",
+        description: "Developed and deployed a professional website for Smart Research Solution, focused on presenting its services through a responsive and accessible web experience.",
+        role: "Independent Developer / BuildNexDev",
+        responsibilities: [
+            "Professional website development",
+            "Responsive and accessible web experience",
+            "Deployment and configuration"
+        ],
+        technologies: ["HTML", "CSS", "JavaScript", "Deployment"],
+        platforms: ["Website"],
+        image: null,
+        links: [
+            { label: "View Live Website", url: "https://srsolution.org.in/", icon: "fa-solid fa-globe" }
+        ],
+        ownershipNote: "Developed independently through BuildNexDev."
+    },
+    {
+        id: "buildnexdevadmin",
+        name: "BuildNexDev Admin Panel",
+        type: "freelance",
+        company: "BuildNexDev",
+        description: "Built a custom administration platform to manage website content, projects, enquiries, and other operational data for the BuildNexDev ecosystem.",
+        role: "Full Stack Developer",
+        responsibilities: [
+            "Custom administration platform development",
+            "Content and enquiry management",
+            "Ecosystem operational data handling"
+        ],
+        technologies: ["React", "Node.js", "MySQL", "Admin Dashboard"],
+        platforms: ["Internal Platform"],
+        image: null,
+        links: [
+            { label: "Private Admin Platform", url: "https://admin.buildnexdev.in/", icon: "fa-solid fa-lock" }
+        ],
+        ownershipNote: "Developed independently through BuildNexDev."
+    },
+    {
+        id: "nammaqr",
+        name: "NammaQR",
+        type: "freelance",
+        company: "BuildNexDev",
+        description: "A QR-based restaurant ordering and management solution designed to support digital menus, table-based QR access, order workflows, billing, staff operations, and restaurant management.",
+        role: "Product Developer / BuildNexDev",
+        status: "Active", // Removed "In Development" as requested unless accurate
+        responsibilities: [
+            "QR-based ordering solution development",
+            "Digital menus and table access",
+            "Order workflows and billing integration"
+        ],
+        technologies: ["React", "Node.js", "MySQL"],
+        platforms: ["Web App", "Mobile Interface"],
+        image: "Assets/NammaQr (2).png",
+        links: [],
+        ownershipNote: "Developed independently through BuildNexDev."
+    }
+];
+
+// --- Project Rendering & Filtering ---
+const projectsContainer = document.getElementById('projects-container');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const modal = document.getElementById('project-modal');
+const modalBody = document.getElementById('modal-body');
+const closeModal = document.querySelector('.close-modal');
+
+function getBadgeHTML(type) {
+    if (type === 'professional') return `<span class="project-badge badge-professional">Professional Work</span>`;
+    if (type === 'freelance') return `<span class="project-badge badge-freelance">Freelance</span>`;
+    return '';
+}
+
+function renderProjects(filter = 'all') {
+    if (!projectsContainer) return;
+    
+    // Animate out
+    projectsContainer.style.opacity = '0';
+    projectsContainer.style.transform = 'translateY(10px)';
+    
+    setTimeout(() => {
+        projectsContainer.innerHTML = '';
+        
+        let filteredProjects = [];
+        if (filter === 'all') {
+            // Ensure Professional first, then Freelance
+            filteredProjects = [
+                ...projectsData.filter(p => p.type === 'professional'),
+                ...projectsData.filter(p => p.type === 'freelance')
+            ];
+        } else {
+            filteredProjects = projectsData.filter(p => p.type === filter);
+        }
+        
+        filteredProjects.forEach((project, index) => {
+            const techTags = project.technologies.map(tech => `<span>${tech}</span>`).join('');
+            const platformChips = (project.platforms || []).map(p => `<span class="platform-chip">[${p}]</span>`).join(' ');
+            
+            // Image handling (Placeholder logic)
+            const imgSrc = project.image ? project.image : `https://placehold.co/600x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
+            
+            const delay = index * 0.1; // Stagger
+            
+            const cardHTML = `
+                <div class="project-card stagger-item" style="transition-delay: ${delay}s">
+                    ${getBadgeHTML(project.type)}
+                    <div class="project-img-wrapper">
+                        <img src="${imgSrc}" alt="${project.name}" class="project-img">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">${project.name}</h3>
+                        <div class="project-platforms" style="margin-bottom: 0.5rem;">${platformChips}</div>
+                        <p class="project-desc">${project.description}</p>
+                        <div class="project-tech">
+                            ${techTags}
+                        </div>
+                        <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fa-solid fa-user-astronaut"></i> ${project.role}</span>
+                            <button class="btn btn-secondary btn-sm" onclick="openModal('${project.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">View Details <i class="fa-solid fa-arrow-right cta-arrow"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            projectsContainer.insertAdjacentHTML('beforeend', cardHTML);
+        });
+        
+        // Trigger reflow & animate in
+        void projectsContainer.offsetWidth;
+        projectsContainer.style.opacity = '1';
+        projectsContainer.style.transform = 'translateY(0)';
+        projectsContainer.classList.add('active'); // For staggers
+        
+    }, 300); // 300ms matches CSS transition
+}
+
+// Initial Render
+if (projectsContainer) {
+    projectsContainer.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    renderProjects();
+}
+
+// Filter Event Listeners
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderProjects(e.target.getAttribute('data-filter'));
+    });
+});
+
+// --- Modal Logic ---
+window.openModal = function(projectId) {
+    const project = projectsData.find(p => p.id === projectId);
+    if (!project) return;
+    
+    const techTags = project.technologies.map(tech => `<span>${tech}</span>`).join('');
+    const platformChips = (project.platforms || []).map(p => `<span class="platform-chip">[${p}]</span>`).join(' ');
+    
+    const linksHTML = project.links.map(link => 
+        `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <i class="${link.icon}"></i> ${link.label}
+        </a>`
+    ).join('');
+    
+    const responsibilitiesHTML = project.responsibilities.map(res => `<li>${res}</li>`).join('');
+    const imgSrc = project.image ? project.image : `https://placehold.co/800x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
+
+    const modalHTML = `
+        <div class="modal-header">
+            <img src="${imgSrc}" alt="${project.name}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border-color);" />
+            <h2 style="font-size: 2rem;">${project.name}</h2>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                <span class="modal-category" style="margin: 0;">${project.type === 'professional' ? 'Professional Work' : 'Freelance'} | ${project.company}</span>
+                <div class="project-platforms">${platformChips}</div>
+            </div>
+        </div>
+        <div class="modal-body-content">
+            <h3 class="modal-section-title">Overview</h3>
+            <p>${project.description}</p>
+            
+            <h3 class="modal-section-title">My Contribution: ${project.role}</h3>
+            <ul style="padding-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                ${responsibilitiesHTML}
+            </ul>
+            
+            <h3 class="modal-section-title">Technologies</h3>
+            <div class="modal-tech-stack">
+                ${techTags}
+            </div>
+            
+            <div class="modal-buttons">
+                ${linksHTML}
+            </div>
+            
+            <div class="modal-ownership-note">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary-accent); margin-right: 0.5rem;"></i>
+                ${project.ownershipNote}
+            </div>
+        </div>
+    `;
+    
+    modalBody.innerHTML = modalHTML;
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; 
+}
+
+if (closeModal) {
+    closeModal.addEventListener('click', () => {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    });
+}
+
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+});
