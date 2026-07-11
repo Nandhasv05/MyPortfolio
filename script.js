@@ -1,6 +1,6 @@
 // --- Smooth Role Text Transition ---
 const roleElement = document.getElementById("role-text");
-const roles = ["Software Developer", "React Developer", "React Native Developer", "Full Stack Developer"];
+const roles = ["Software Developer", "React Developer", "React Native Developer", "Full Stack Developer", "PHP Developer", "FrontEnd Developer", "BackEnd Developer"];
 let roleIndex = 0;
 
 function rotateRole() {
@@ -154,17 +154,52 @@ function animateNumbers() {
 }
 
 // --- Contact Form Submission ---
-function sendEmail(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    if (btn.classList.contains('loading')) return;
-    btn.classList.add('loading');
-    setTimeout(() => {
-        btn.classList.remove('loading');
-        if (typeof swal !== 'undefined') swal("Message Sent!", "Thank you for reaching out. I'll get back to you soon.", "success");
-        else alert("Message Sent! Thank you for reaching out.");
-        e.target.reset();
-    }, 1500);
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = contactForm.querySelector('button[type="submit"]');
+        if (btn.classList.contains('loading')) return;
+        
+        btn.classList.add('loading');
+        
+        const formData = new FormData(contactForm);
+        
+        fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+        })
+        .then(async (response) => {
+            let json = await response.json();
+            if (response.status == 200) {
+                if (typeof swal !== 'undefined') {
+                    swal("Message Sent!", "Thank you for reaching out. I'll get back to you soon.", "success");
+                } else {
+                    alert("Message Sent! Thank you for reaching out.");
+                }
+                contactForm.reset();
+            } else {
+                console.log(response);
+                if (typeof swal !== 'undefined') {
+                    swal("Error!", json.message || "Something went wrong. Please try again.", "error");
+                } else {
+                    alert("Error! Something went wrong.");
+                }
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            if (typeof swal !== 'undefined') {
+                swal("Error!", "Something went wrong. Please check your connection.", "error");
+            } else {
+                alert("Error! Something went wrong.");
+            }
+        })
+        .finally(() => {
+            btn.classList.remove('loading');
+        });
+    });
 }
 
 // --- PROJECT DATA STRUCTURE ---
@@ -292,7 +327,7 @@ const projectsData = [
         ],
         technologies: ["HTML", "CSS", "JavaScript", "Responsive Design"],
         platforms: ["Website"],
-        image: null, // No exact screenshot provided, uses placeholder
+        image: "Assets/saibuilders.png",
         links: [
             { label: "View Live Website", url: "https://saibuilder.in/", icon: "fa-solid fa-globe" }
         ],
@@ -312,7 +347,7 @@ const projectsData = [
         ],
         technologies: ["HTML", "CSS", "JavaScript", "Deployment"],
         platforms: ["Website"],
-        image: null,
+        image: "Assets/srs.png",
         links: [
             { label: "View Live Website", url: "https://srsolution.org.in/", icon: "fa-solid fa-globe" }
         ],
@@ -332,7 +367,7 @@ const projectsData = [
         ],
         technologies: ["React", "Node.js", "MySQL", "Admin Dashboard"],
         platforms: ["Internal Platform"],
-        image: null,
+        image: "Assets/BuildnexdevAdminPanel.png",
         links: [
             { label: "Private Admin Platform", url: "https://admin.buildnexdev.in/", icon: "fa-solid fa-lock" }
         ],
@@ -353,7 +388,7 @@ const projectsData = [
         ],
         technologies: ["React", "Node.js", "MySQL"],
         platforms: ["Web App", "Mobile Interface"],
-        image: "Assets/NammaQr (2).png",
+        image: "Assets/NammaQr.png",
         links: [],
         ownershipNote: "Developed independently through BuildNexDev."
     }
@@ -374,14 +409,14 @@ function getBadgeHTML(type) {
 
 function renderProjects(filter = 'all') {
     if (!projectsContainer) return;
-    
+
     // Animate out
     projectsContainer.style.opacity = '0';
     projectsContainer.style.transform = 'translateY(10px)';
-    
+
     setTimeout(() => {
         projectsContainer.innerHTML = '';
-        
+
         let filteredProjects = [];
         if (filter === 'all') {
             // Ensure Professional first, then Freelance
@@ -392,45 +427,59 @@ function renderProjects(filter = 'all') {
         } else {
             filteredProjects = projectsData.filter(p => p.type === filter);
         }
-        
+
         filteredProjects.forEach((project, index) => {
             const techTags = project.technologies.map(tech => `<span>${tech}</span>`).join('');
             const platformChips = (project.platforms || []).map(p => `<span class="platform-chip">[${p}]</span>`).join(' ');
-            
+
             // Image handling (Placeholder logic)
             const imgSrc = project.image ? project.image : `https://placehold.co/600x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
-            
+
             const delay = index * 0.1; // Stagger
-            
+
             const cardHTML = `
                 <div class="project-card stagger-item" style="transition-delay: ${delay}s">
-                    ${getBadgeHTML(project.type)}
-                    <div class="project-img-wrapper">
-                        <img src="${imgSrc}" alt="${project.name}" class="project-img">
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">${project.name}</h3>
-                        <div class="project-platforms" style="margin-bottom: 0.5rem;">${platformChips}</div>
-                        <p class="project-desc">${project.description}</p>
-                        <div class="project-tech">
-                            ${techTags}
+                    <div class="project-card-inner">
+                        ${getBadgeHTML(project.type)}
+                        <div class="project-img-wrapper">
+                            <img src="${imgSrc}" alt="${project.name}" class="project-img">
                         </div>
-                        <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                            <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fa-solid fa-user-astronaut"></i> ${project.role}</span>
-                            <button class="btn btn-secondary btn-sm" onclick="openModal('${project.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">View Details <i class="fa-solid fa-arrow-right cta-arrow"></i></button>
+                        <div class="project-info">
+                            <h3 class="project-title">${project.name}</h3>
+                            <div class="project-platforms" style="margin-bottom: 0.5rem;">${platformChips}</div>
+                            <p class="project-desc">${project.description}</p>
+                            <div class="project-tech">
+                                ${techTags}
+                            </div>
+                            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fa-solid fa-user-astronaut"></i> ${project.role}</span>
+                                <button class="btn btn-secondary btn-sm" onclick="openModal('${project.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">View Details <i class="fa-solid fa-arrow-right cta-arrow"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
             projectsContainer.insertAdjacentHTML('beforeend', cardHTML);
         });
-        
+
         // Trigger reflow & animate in
         void projectsContainer.offsetWidth;
         projectsContainer.style.opacity = '1';
         projectsContainer.style.transform = 'translateY(0)';
         projectsContainer.classList.add('active'); // For staggers
-        
+
+        // Initialize 3D Tilt Effect
+        if (typeof VanillaTilt !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            VanillaTilt.init(document.querySelectorAll(".project-card"), {
+                max: 12,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.15,
+                scale: 1.02,
+                easing: "cubic-bezier(.03,.98,.52,.99)"
+            });
+        }
+
     }, 300); // 300ms matches CSS transition
 }
 
@@ -450,19 +499,19 @@ filterBtns.forEach(btn => {
 });
 
 // --- Modal Logic ---
-window.openModal = function(projectId) {
+window.openModal = function (projectId) {
     const project = projectsData.find(p => p.id === projectId);
     if (!project) return;
-    
+
     const techTags = project.technologies.map(tech => `<span>${tech}</span>`).join('');
     const platformChips = (project.platforms || []).map(p => `<span class="platform-chip">[${p}]</span>`).join(' ');
-    
-    const linksHTML = project.links.map(link => 
+
+    const linksHTML = project.links.map(link =>
         `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
             <i class="${link.icon}"></i> ${link.label}
         </a>`
     ).join('');
-    
+
     const responsibilitiesHTML = project.responsibilities.map(res => `<li>${res}</li>`).join('');
     const imgSrc = project.image ? project.image : `https://placehold.co/800x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
 
@@ -499,10 +548,10 @@ window.openModal = function(projectId) {
             </div>
         </div>
     `;
-    
+
     modalBody.innerHTML = modalHTML;
     modal.classList.add('show');
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
 }
 
 if (closeModal) {
