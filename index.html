@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NandhaKumar</title>
+    <title>Nandha Kumar | Software Developer</title>
     <meta name="description"
         content="Portfolio of Nandha Kumar, a Software Developer specializing in React, React Native, TypeScript, PHP, MySQL, and web and mobile application development.">
 
@@ -16,10 +16,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
     <!-- Favicon -->
-    <link rel="icon" href="Assets/1727733662606.jpg" type="image/jpeg">
+    <link rel="icon" href="Assets/profile.jpg" type="image/jpeg">
 </head>
 
 <body>
+    <!-- Page Loader -->
+    <div id="page-loader" aria-live="polite" aria-busy="true">
+        <div class="loader-brand">Nandha<span>.</span></div>
+        <div class="loader-ring" role="status" aria-label="Loading"></div>
+        <p class="loader-text">Loading portfolio</p>
+    </div>
+
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress"></div>
 
@@ -34,7 +41,7 @@
     <!-- Header Section -->
     <header class="header intro-reveal" id="header">
         <div class="container nav-container">
-            <a href="#home" class="logo">Nandha <span>Kumar</span></a>
+            <a href="#home" class="logo">Nandha<span class="logo-dot">.</span></a>
 
             <nav class="main-nav" id="main-nav">
                 <a href="#home" class="nav-links active">Home</a>
@@ -45,12 +52,14 @@
                 <a href="#contact" class="nav-links">Contact</a>
 
                 <div class="nav-actions">
-                    <img src="Assets/sun.png" alt="Theme Toggle" id="theme-icon" title="Toggle Theme" />
+                    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle Theme">
+                        <img src="Assets/sun.png" alt="" id="theme-icon" />
+                    </button>
                     <a href="Assets/Nandhakumar_Resume.pdf" download class="btn btn-primary btn-sm">Resume</a>
                 </div>
             </nav>
 
-            <div class="hamburger" id="hamburger">
+            <div class="hamburger" id="hamburger" aria-label="Open menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -64,28 +73,59 @@
             <div class="container hero-container">
                 <div class="hero-content stagger-container" id="hero-text-container">
                     <div class="badge stagger-item">
-                        <span class="dot"></span> Available for Opportunities
+                        <span class="dot"></span> Open to opportunities
                     </div>
-                    <h1 class="stagger-item">Hi, I'm<br>Nandha Kumar</h1>
+                    <p class="hero-eyebrow stagger-item">Software Developer</p>
+                    <h1 class="stagger-item">Nandha Kumar</h1>
                     <div class="hero-title-dynamic stagger-item">
-                        I am a <span id="role-text">Software Developer</span>
+                        Building products with <span id="role-text">React &amp; TypeScript</span>
                     </div>
-                    <p class="stagger-item">I build responsive web applications and cross-platform mobile experiences
-                        using React, React Native, TypeScript, PHP, and MySQL.</p>
-                    <div class="hero-location stagger-item">
-                        <i class="fa-solid fa-location-dot"></i> Trichy, Tamil Nadu, India
+                    <p class="hero-lead stagger-item">I design and ship responsive web apps and cross-platform mobile
+                        experiences — React, React Native, TypeScript, PHP, and MySQL — from idea to production.</p>
+
+                    <div class="hero-meta stagger-item">
+                        <span><i class="fa-solid fa-location-dot"></i> Trichy, Tamil Nadu</span>
+                        <span class="meta-sep"></span>
+                        <span><i class="fa-solid fa-briefcase"></i> 2+ years experience</span>
                     </div>
 
                     <div class="hero-actions stagger-item">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                        <a href="#projects" class="btn btn-primary">View projects</a>
+                        <a href="#contact" class="btn btn-secondary">Contact me</a>
+                        <a href="https://github.com/Nandhasv05" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" aria-label="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/nandhakumar-s-v-0ab492254/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    </div>
+
+                    <div class="hero-tech stagger-item">
+                        <span class="hero-tech-label">Stack</span>
+                        <div class="hero-tech-list">
+                            <span>React</span>
+                            <span>React Native</span>
+                            <span>TypeScript</span>
+                            <span>PHP</span>
+                            <span>MySQL</span>
+                            <span>AWS</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="hero-image-wrapper intro-reveal-image">
-                    <div class="hero-image-backdrop"></div>
-                    <img src="Assets/developer_illustration.png" alt="Developer Illustration" class="hero-image"
-                        id="change-image">
+                <div class="hero-visual intro-reveal-image">
+                    <div class="hero-image-wrapper">
+                        <div class="hero-image-backdrop"></div>
+                        <img src="Assets/profile.jpg" alt="Nandha Kumar — Software Developer" class="hero-image" id="change-image" width="900" height="1350">
+                        <div class="hero-photo-frame" aria-hidden="true"></div>
+                    </div>
+                    <div class="hero-status-card">
+                        <span class="status-live"></span>
+                        <div>
+                            <strong>Available for work</strong>
+                            <p>Web · Mobile · Freelance</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -94,29 +134,28 @@
         <section id="about">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">ABOUT</span>
-                    <h2 class="section-title">About <span>Me</span></h2>
+                    <span class="section-label">01 — About</span>
+                    <h2 class="section-title">Engineer focused on <span>shipping real products</span></h2>
                     <div class="heading-line"></div>
                 </div>
 
                 <div class="about-bento stagger-container">
                     <!-- Card 1: Main Bio -->
                     <div class="bento-card bento-bio stagger-item">
-                        <h3 class="bento-title">Hi, I'm Nandha Kumar</h3>
-                        <p>A Software Developer based in Chennai with around 2 years of experience building web and
-                            mobile applications. I work primarily with React, React Native, TypeScript, PHP, and MySQL.
+                        <h3 class="bento-title">Profile</h3>
+                        <p>Software Developer based in Chennai with around 2 years of experience building web and
+                            mobile applications. Primary stack: React, React Native, TypeScript, PHP, and MySQL.
                         </p>
-                        <p>My experience includes developing responsive user interfaces, integrating REST APIs and
-                            payment gateways, working with databases, and deploying applications using tools such as AWS
-                            EC2, S3, Nginx, PM2, Vercel, and Netlify.</p>
-                        <p>I enjoy turning business requirements into practical, user-friendly products and continuously
-                            improving my skills in modern frontend and backend development.</p>
+                        <p>I build responsive interfaces, integrate REST APIs and payment gateways, work with
+                            databases, and deploy with AWS EC2, S3, Nginx, PM2, Vercel, and Netlify.</p>
+                        <p>I turn business requirements into practical, user-friendly products and keep leveling up
+                            across frontend and backend development.</p>
                     </div>
 
                     <!-- Card 2: Visual -->
                     <div class="bento-card bento-visual stagger-item">
                         <div class="bento-visual-inner">
-                            <img src="Assets/developer_illustration.png" alt="Developer Illustration">
+                            <img src="Assets/profile.jpg" alt="Nandha Kumar">
                         </div>
                     </div>
 
@@ -149,7 +188,7 @@
         <section id="experience" style="background-color: var(--surface-color);">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">CAREER</span>
+                    <span class="section-label">02 — Career</span>
                     <h2 class="section-title">Experience & <span>Education</span></h2>
                     <div class="heading-line"></div>
                 </div>
@@ -252,8 +291,8 @@
         <section id="skills">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">EXPERTISE</span>
-                    <h2 class="section-title">My <span>Skills</span></h2>
+                    <span class="section-label">03 — Expertise</span>
+                    <h2 class="section-title">Technical <span>Skills</span></h2>
                     <div class="heading-line"></div>
                 </div>
 
@@ -337,7 +376,7 @@
         <section id="mentorship" style="background-color: var(--surface-color); padding-bottom: 2rem;">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">MENTORSHIP</span>
+                    <span class="section-label">04 — Mentorship</span>
                     <h2 class="section-title">Mentorship <span>Experience</span></h2>
                     <div class="heading-line"></div>
                 </div>
@@ -375,8 +414,8 @@
         <section id="projects" style="background-color: var(--bg-color);">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">WORK</span>
-                    <h2 class="section-title">Project <span>Portfolio</span></h2>
+                    <span class="section-label">05 — Work</span>
+                    <h2 class="section-title">Selected <span>Projects</span></h2>
                     <p style="color: var(--text-secondary); margin-top: 1rem; max-width: 600px; margin-inline: auto;">
                         Production applications I contributed to during my professional role at Kapiital Kapslock, and
                         selected client and independent development work completed through BuildNexDev.</p>
@@ -423,8 +462,8 @@
         <section id="contact">
             <div class="container">
                 <div class="section-heading-wrapper reveal">
-                    <span class="section-label">CONTACT</span>
-                    <h2 class="section-title">Let's Work <span>Together</span></h2>
+                    <span class="section-label">06 — Contact</span>
+                    <h2 class="section-title">Let's build <span>something</span></h2>
                     <div class="heading-line"></div>
                 </div>
 
@@ -522,8 +561,8 @@
     <!-- Footer Section -->
     <footer class="footer">
         <div class="container stagger-container">
-            <h2 class="footer-logo stagger-item">Nandha <span>Kumar</span></h2>
-            <p class="footer-role stagger-item">Software Developer</p>
+            <h2 class="footer-logo stagger-item">Nandha<span class="logo-dot">.</span></h2>
+            <p class="footer-role stagger-item">Software Developer · React · React Native · PHP</p>
 
             <div class="footer-socials stagger-item">
                 <a href="https://github.com/Nandhasv05" target="_blank" rel="noopener noreferrer"><i

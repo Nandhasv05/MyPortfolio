@@ -1,6 +1,28 @@
+// --- Motion preference ---
+const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// --- Page Loader ---
+const pageLoader = document.getElementById('page-loader');
+const hideLoader = () => {
+    if (!pageLoader || pageLoader.classList.contains('hide')) return;
+    pageLoader.classList.add('hide');
+    pageLoader.setAttribute('aria-busy', 'false');
+    setTimeout(() => {
+        if (pageLoader.parentNode) pageLoader.parentNode.removeChild(pageLoader);
+    }, 500);
+};
+if (document.readyState === 'complete') {
+    setTimeout(hideLoader, isReducedMotion ? 0 : 400);
+} else {
+    window.addEventListener('load', () => {
+        setTimeout(hideLoader, isReducedMotion ? 0 : 450);
+    });
+}
+setTimeout(hideLoader, 4000);
+
 // --- Smooth Role Text Transition ---
 const roleElement = document.getElementById("role-text");
-const roles = ["Software Developer", "React Developer", "React Native Developer", "Full Stack Developer", "PHP Developer", "FrontEnd Developer", "BackEnd Developer"];
+const roles = ["React & TypeScript", "React Native", "PHP & MySQL", "Full Stack Apps", "REST APIs", "Cloud Deployments"];
 let roleIndex = 0;
 
 function rotateRole() {
@@ -13,6 +35,21 @@ function rotateRole() {
 
 if (roleElement) {
     setInterval(rotateRole, 3500);
+}
+
+// --- Hero Entrance Animation ---
+const heroTextContainer = document.getElementById('hero-text-container');
+if (heroTextContainer) {
+    const activateHero = () => {
+        heroTextContainer.classList.add('active', 'hero-ready');
+    };
+    if (isReducedMotion) {
+        activateHero();
+    } else {
+        requestAnimationFrame(() => {
+            setTimeout(activateHero, 80);
+        });
+    }
 }
 
 // --- Cursor Interaction (Desktop Glow) ---
@@ -115,21 +152,25 @@ if (themeIcon) {
 }
 
 // --- Scroll Reveal Animations ---
-const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!isReducedMotion) {
     const revealCallback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                if (entry.target.classList.contains('about-stats')) animateNumbers();
+                if (entry.target.classList.contains('about-stats') || entry.target.classList.contains('about-bento')) {
+                    animateNumbers();
+                }
                 observer.unobserve(entry.target);
             }
         });
     };
-    const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+    const revealOptions = { threshold: 0.12, rootMargin: "0px 0px -40px 0px" };
     const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-    document.querySelectorAll('.stagger-container').forEach(el => revealObserver.observe(el));
+    document.querySelectorAll('.stagger-container').forEach(el => {
+        if (el.id === 'hero-text-container') return;
+        revealObserver.observe(el);
+    });
 } else {
     document.querySelectorAll('.reveal, .stagger-container').forEach(el => el.classList.add('active'));
 }
@@ -433,7 +474,7 @@ function renderProjects(filter = 'all') {
             const platformChips = (project.platforms || []).map(p => `<span class="platform-chip">[${p}]</span>`).join(' ');
 
             // Image handling (Placeholder logic)
-            const imgSrc = project.image ? project.image : `https://placehold.co/600x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
+            const imgSrc = project.image ? project.image : `https://placehold.co/600x400/0b1220/14b8a6?text=${encodeURIComponent(project.name)}`;
 
             const delay = index * 0.1; // Stagger
 
@@ -513,7 +554,7 @@ window.openModal = function (projectId) {
     ).join('');
 
     const responsibilitiesHTML = project.responsibilities.map(res => `<li>${res}</li>`).join('');
-    const imgSrc = project.image ? project.image : `https://placehold.co/800x400/080B14/7C3AED?text=${encodeURIComponent(project.name)}`;
+    const imgSrc = project.image ? project.image : `https://placehold.co/800x400/0b1220/14b8a6?text=${encodeURIComponent(project.name)}`;
 
     const modalHTML = `
         <div class="modal-header">
